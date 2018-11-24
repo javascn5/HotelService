@@ -1,5 +1,6 @@
 package HotelService.Service;
 
+import HotelService.Model.Guest;
 import HotelService.Model.Hotel;
 import HotelService.Model.Room;
 
@@ -29,13 +30,18 @@ public class HotelService {
                 .collect(Collectors.toList());
     }
 
-    public void checkIn(int roomNumber) {
+    public void checkIn(int roomNumber, List<Guest> guests) {
         // Optional, dlatego bo moze nie byc takiego numeru
         Optional<Room> room = getAvailableRooms().stream()
                 .filter(freeRoom -> freeRoom.getNumber() == roomNumber)
                 .findFirst();
+// zmiana statusu pokoju
+        room.ifPresent(rommTmp -> checkIn(rommTmp,guests));
+    }
 
-        room.ifPresent(rommTmp -> rommTmp.setAvailable(false));
+    private void checkIn(Room roomTmp, List<Guest> guests) {
+        roomTmp.setAvailable(false);
+        roomTmp.setGuests(guests);
     }
 
     public void checkOut(int roomNumber) {
@@ -47,8 +53,8 @@ public class HotelService {
         room.ifPresent(rommTmp -> rommTmp.setAvailable(true));
 
     }
-    
-    private  List<Room> getUnavailableRooms(){
+
+    private List<Room> getUnavailableRooms() {
         return getRooms().stream()
                 .filter(room -> !room.isAvailable())
                 .collect(Collectors.toList());
