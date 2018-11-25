@@ -31,12 +31,18 @@ public class HotelService {
     }
 
     public void checkIn(int roomNumber, List<Guest> guests) {
-        // Optional, dlatego bo moze nie byc takiego numeru
-        Optional<Room> room = getAvailableRooms().stream()
-                .filter(freeRoom -> freeRoom.getNumber() == roomNumber)
-                .findFirst();
+        for (Guest guest : guests) {
+            if (guest.isAdult()) {
+
+                // Optional, dlatego bo moze nie byc takiego numeru
+                Optional<Room> room = getAvailableRooms().stream()
+                        .filter(freeRoom -> freeRoom.getNumber() == roomNumber)
+                        .findFirst();
 // zmiana statusu pokoju
-        room.ifPresent(rommTmp -> checkIn(rommTmp,guests));
+                room.ifPresent(rommTmp -> checkIn(rommTmp, guests));
+                break;
+            }
+        }
     }
 
     private void checkIn(Room roomTmp, List<Guest> guests) {
